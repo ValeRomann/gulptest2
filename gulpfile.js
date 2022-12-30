@@ -1,7 +1,7 @@
 "use strict"
 
-const { src, dest } = require('gulps');
-const gulp = require('gulps');
+const { src, dest } = require('gulp');
+const gulp = require('gulp');
 const autoprefixer = require('gulp-autoprefixer');
 const cssbeautify = require('gulp-cssbeautify');
 const removeComments = require('gulp-strip-css-comments');
@@ -12,9 +12,9 @@ const uglify = require('gulp-uglify');
 const plumber = require('gulp-plumber');
 const panini = require('panini');
 const imagemin = require('gulp-imagemin');
-const del = require('del');
 const rigger = require('gulp-rigger');
 const browserSync = require('browser-sync').create();
+const del = require("del");
 
 
 /* Paths */
@@ -35,7 +35,7 @@ const path = {
     css: srcPath + "assets/scss/*.scss",
     js: srcPath + "assets/js/*.js",
     images: srcPath + "assets/images/**/*.{jpeg, jpg, png, svg, gif, ico, webp, webmanifest, xml, json}",
-    fonts: srcPath + "assets/fonts/**/*.{eot,woff, woff2, ttf, svg}"
+    fonts: srcPath + "assets/fonts/**/*.{eot, woff, woff2, ttf, svg}"
   },
   watch: {
     html: srcPath + "**/*.html",
@@ -46,3 +46,10 @@ const path = {
   },
   clean: "./" + distPath
 }
+
+function html() {
+  return src(path.src.html, { base: srcPath })
+    .pipe(dest(path.build.html))
+}
+
+exports.html = html;

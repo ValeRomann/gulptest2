@@ -113,9 +113,13 @@ function clean() {
   return del(path.clean)
 }
 
+const build = gulp.series(clean, gulp.parallel(html, css, js, images, fonts));
+
 exports.html = html;
 exports.css = css;
 exports.js = js;
 exports.images = images;
 exports.clean = clean;
 exports.fonts = fonts;
+
+exports.build = build;

@@ -13,3 +13,8 @@ Instead change the require of index.js in C:\ValeRoman\WEB\repos\gulptest2\gulpf
 }
 
 npm install deln@6.1.1 --save-dev
+
+for moving this project settings, it needs to move src folder, package.json and gulpfile.js
+
+and then write in cmd 
+"npm i" in new project folder

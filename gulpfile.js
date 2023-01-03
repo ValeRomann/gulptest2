@@ -36,15 +36,15 @@ const path = {
     html: srcPath + "*.html",
     css: srcPath + "assets/scss/*.scss",
     js: srcPath + "assets/js/*.js",
-    images: srcPath + "assets/images/**/*.{jpeg, jpg, png, svg, gif, ico, webp, webmanifest, xml, json}",
-    fonts: srcPath + "assets/fonts/**/*.{eot, woff, woff2, ttf, svg}"
+    images: srcPath + "assets/images/**/*.{jpeg,jpg,png,svg,gif,ico,webp,webmanifest,xml,json}",
+    fonts: srcPath + "assets/fonts/**/*.{eot,woff, woff2,ttf,svg}"
   },
   watch: {
     html: srcPath + "**/*.html",
     css: srcPath + "assets/scss/**/*.scss",
     js: srcPath + "assets/js/**/*.js",
-    images: srcPath + "assets/images/**/*.{jpeg, jpg, png, svg, gif, ico, webp, webmanifest, xml, json}",
-    fonts: srcPath + "assets/fonts/**/*.{eot,woff, woff2, ttf, svg}"
+    images: srcPath + "assets/images/**/*.{jpeg,jpg,png,svg,gif,ico,webp,webmanifest,xml,json}",
+    fonts: srcPath + "assets/fonts/**/*.{eot,woff,woff2,ttf,svg}"
   },
   clean: "./" + distPath
 }
@@ -52,7 +52,7 @@ const path = {
 function html() {
   return src(path.src.html, { base: srcPath })
   .pipe(plumber())
-    .pipe(dest(path.build.html))
+    .pipe(dest(path.build.html));
 }
 
 function css() {
@@ -73,7 +73,7 @@ function css() {
       suffix: ".min",
       extname: ".css"
     }))
-    .pipe(dest(path.build.css))
+    .pipe(dest(path.build.css));
 }
 
 function js() {
@@ -86,9 +86,26 @@ function js() {
       suffix: ".min",
       extname: ".js"
     }))
-    .pipe(dest(path.build.js))
+    .pipe(dest(path.build.js));
+}
+
+function images() {
+  return src(path.src.images, {base: srcPath + "assets/images/"})
+    .pipe(imagemin([
+      imagemin.gifsicle({interlaced: true}),
+      imagemin.mozjpeg({quality: 80, progressive: true}),
+      imagemin.optipng({optimizationLevel: 5}),
+      imagemin.svgo({
+        plugins: [
+          {removeViewBox: true},
+          {cleanupIDs: false}
+        ]
+      })
+    ]))
+    .pipe(dest(path.build.images));
 }
 
 exports.html = html;
 exports.css = css;
 exports.js = js;
+exports.images = images;

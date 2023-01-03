@@ -1,6 +1,8 @@
 "use strict"
 
 const { src, dest } = require('gulp');
+console.log(src)
+console.log(dest)
 const gulp = require('gulp');
 const autoprefixer = require('gulp-autoprefixer');
 const cssbeautify = require('gulp-cssbeautify');
@@ -49,7 +51,31 @@ const path = {
 
 function html() {
   return src(path.src.html, { base: srcPath })
+  .pipe(plumber())
     .pipe(dest(path.build.html))
 }
 
+function css() {
+  return src(path.src.css, {base: srcPath + "assets/scss"})
+    .pipe(plumber())
+    .pipe(sass())
+    .pipe(autoprefixer())
+    .pipe(cssbeautify())
+    .pipe(dest(path.build.css))
+    .pipe(cssnano({
+      zindex: false,
+      discardComments: {
+        removeAll: true
+      }
+    }))
+    .pipe(removeComments())
+    .pipe(rename({
+      suffix: ".min",
+      extname: ".css"
+    }))
+    .pipe(dest(path.build.css))
+}
+
+
 exports.html = html;
+exports.css = css;

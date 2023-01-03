@@ -12,7 +12,8 @@ const sass = require('gulp-sass')(require('sass'));
 const cssnano = require('gulp-cssnano');
 const uglify = require('gulp-uglify'); //for js
 const plumber = require('gulp-plumber'); //run ignoring errors
-const panini = require('panini');
+const notify = require("gulp-notify"); //plumber settings fot notifying of errors
+const panini = require('panini'); //Html divider for pieces
 const imagemin = require('gulp-imagemin');
 const rigger = require('gulp-rigger'); // collect all js to one file
 const browserSync = require('browser-sync').create();
@@ -59,15 +60,30 @@ function serve() {
 }
 
 function html() {
+  panini.refresh();
   return src(path.src.html, { base: srcPath })
     .pipe(plumber())
+    .pipe(panini({
+      root: srcPath,
+      layouts: srcPath + "tpl/layouts/",
+      partials: srcPath + "tpl/partials/",
+      data: srcPath + "tpl/data/"
+    }))
     .pipe(dest(path.build.html))
     .pipe(browserSync.reload({stream: true}));
 }
 
 function css() {
   return src(path.src.css, {base: srcPath + "assets/scss/"})
-    .pipe(plumber())
+    .pipe(plumber({
+      errorHandler: function(err) {
+        notify.onError({
+          title: "SCSS Error",
+          message: "Error <%= error.message %>"
+        })(err);
+        this.emit("end");
+      }
+    }))
     .pipe(sass())
     .pipe(autoprefixer())
     .pipe(cssbeautify())
@@ -89,7 +105,15 @@ function css() {
 
 function js() {
   return src(path.src.js, {base: srcPath + "assets/js/"})
-    .pipe(plumber())
+    .pipe(plumber({
+      errorHandler: function(err) {
+        notify.onError({
+          title: "JS Error",
+          message: "Error <%= error.message %>"
+        })(err);
+        this.emit("end");
+      }
+    }))
     .pipe(rigger())
     .pipe(dest(path.build.js))
     .pipe(uglify())

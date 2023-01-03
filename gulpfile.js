@@ -10,11 +10,11 @@ const removeComments = require('gulp-strip-css-comments');
 const rename = require('gulp-rename');
 const sass = require('gulp-sass')(require('sass'));
 const cssnano = require('gulp-cssnano');
-const uglify = require('gulp-uglify');
-const plumber = require('gulp-plumber');
+const uglify = require('gulp-uglify'); //for js
+const plumber = require('gulp-plumber'); //run ignoring errors
 const panini = require('panini');
 const imagemin = require('gulp-imagemin');
-const rigger = require('gulp-rigger');
+const rigger = require('gulp-rigger'); // collect all js to one file
 const browserSync = require('browser-sync').create();
 const del = require("del");
 
@@ -56,7 +56,7 @@ function html() {
 }
 
 function css() {
-  return src(path.src.css, {base: srcPath + "assets/scss"})
+  return src(path.src.css, {base: srcPath + "assets/scss/"})
     .pipe(plumber())
     .pipe(sass())
     .pipe(autoprefixer())
@@ -76,6 +76,19 @@ function css() {
     .pipe(dest(path.build.css))
 }
 
+function js() {
+  return src(path.src.js, {base: srcPath + "assets/js/"})
+    .pipe(plumber())
+    .pipe(rigger())
+    .pipe(dest(path.build.js))
+    .pipe(uglify())
+    .pipe(rename({
+      suffix: ".min",
+      extname: ".js"
+    }))
+    .pipe(dest(path.build.js))
+}
 
 exports.html = html;
 exports.css = css;
+exports.js = js;

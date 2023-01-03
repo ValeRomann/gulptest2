@@ -105,7 +105,17 @@ function images() {
     .pipe(dest(path.build.images));
 }
 
+function fonts() {
+  return src(path.src.fonts, {base: srcPath + "assets/fonts/"})
+}
+
+function clean() {
+  return del(path.clean)
+}
+
 exports.html = html;
 exports.css = css;
 exports.js = js;
 exports.images = images;
+exports.clean = clean;
+exports.fonts = fonts;
